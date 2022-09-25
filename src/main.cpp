@@ -26,6 +26,7 @@ MatrixStack modelViewProjectionMatrix;
 double prev_xpos = -10000;
 double prev_ypos = -10000;
 
+std::vector<RobotElements*> dfs_node_list;
 
 // Draw cube on screen
 void DrawCube(glm::mat4& modelViewProjectionMatrix)
@@ -38,29 +39,23 @@ void DrawCube(glm::mat4& modelViewProjectionMatrix)
 class RobotElements
 {
 private:
-	glm::vec3 jointTranslationWrtParentJoint;
-	glm::vec3 jointAngle;
-	glm::vec3 translationWrtJoint;
-	glm::vec3 scalingFactors;
+	glm::vec3 jointTranslationWrtParentJoint; //global
+	glm::vec3 jointAngle;//global
+	glm::vec3 translationWrtJoint;//local translate joint pos (0,0,0)
+	glm::vec3 scalingFactors;//local
 	std::string identity;
 	MatrixStack elementStack;
-	//glm::vec3 jointPos;
-	//glm::vec3 attatchPoint;
 
 public:
 	RobotElements* parent;
 	std::vector<RobotElements*> children;
+	bool selectedComponent = false;
 	RobotElements() {}
 	RobotElements(std::string _identity): identity() {}
 	RobotElements(std::string _identity, glm::vec3 _jointTranslationWrtParentJoint, glm::vec3 _translationWrtJoint, glm::vec3 _scalingFactors, glm::vec3 _jointAngle) : 
 		identity(_identity), jointTranslationWrtParentJoint(_jointTranslationWrtParentJoint), translationWrtJoint(_translationWrtJoint), scalingFactors(_scalingFactors), jointAngle(_jointAngle) 
 	{
 		this->elementStack.loadIdentity();
-		/*this->elementStack.pushMatrix();
-		int width, height;
-		glfwGetFramebufferSize(window, &width, &height);
-		this->elementStack.Perspective(glm::radians(60.0f), float(width) / float(height), 0.1f, 100.0f);
-		this->elementStack.LookAt(eye, center, up);*/
 	}
 	~RobotElements() 
 	{ 
@@ -76,7 +71,29 @@ public:
 	std::string get_identity() {
 		return this->identity;
 	}
-	void Draw() 
+
+	void incrementAngleX() {
+		this->jointAngle.x++;
+	}
+	void incrementAngleY() {
+		this->jointAngle.y++;
+	}
+	void incrementAngleZ() {
+		this->jointAngle.z++;
+	}
+
+	void DecrementAngleX() {
+		this->jointAngle.x--;
+	}
+	void DecrementAngleY() {
+		this->jointAngle.y--;
+	}
+	void DecrementAngleZ() {
+		this->jointAngle.z--;
+	}
+
+	//MatrixStack & _matrixStack
+	void Draw(MatrixStack& parentStack)
 	{
 		//draw itself
 		//for now just display the identity
@@ -87,25 +104,32 @@ public:
 		this->elementStack.Perspective(glm::radians(60.0f), float(width) / float(height), 0.1f, 100.0f);
 		this->elementStack.LookAt(eye, center, up);
 		
-		//move componenent to center of coordinate
-		//this->elementStack.pushMatrix(); 
-		//modelViewProjectionMatrix.print("cube");
-		//translate
+		//move componenent to center of coordinate how do we calculat his
 		this->elementStack.translate(this->translationWrtJoint);
 
-
-		this->elementStack.rotateX(glm::radians(this->jointAngle.x)); //need to calculate angle?
-		this->elementStack.rotateY(glm::radians(this->jointAngle.y)); //need to calculate angle?
-		this->elementStack.rotateZ(glm::radians(this->jointAngle.z)); //need to calculate angle?
+		//how do we calculate this. The joint angle with respect to what vector
+		this->elementStack.rotateX(glm::radians(this->jointAngle.x)); 
+		this->elementStack.rotateY(glm::radians(this->jointAngle.y));
+		this->elementStack.rotateZ(glm::radians(this->jointAngle.z));
 
 		
 		//scale
 		this->elementStack.scale(this->scalingFactors);
 
+		if (selectedComponent) {
+			this->elementStack.scale(1.1, 1.1, 1.1);
+		}
+
 		//translate to parent joint
+		//do we need to calculate this as well?
 		this->elementStack.translate(this->jointTranslationWrtParentJoint);
 		
 		// joint translation/ rotation/ component translation/ scaling
+
+		//apply parent transformation
+
+		//rotate
+		//scale
 
 		//modelViewProjectionMatrix.print("cube");
 		DrawCube(elementStack.topMatrix());
@@ -117,7 +141,7 @@ public:
 		//draw children
 
 		for (auto robotElement : this->children) {
-			robotElement->Draw();
+			robotElement->Draw(parentStack);
 		}
 	}
 
@@ -125,6 +149,7 @@ public:
 };
 
 RobotElements* robot = nullptr;
+RobotElements* selectedComponent = nullptr;
 
 
 RobotElements* ConstructRobot()
@@ -169,12 +194,13 @@ RobotElements* ConstructRobot()
 		std::string identity = "lower " + torsoRoot->children[i]->get_identity();
 		torsoRoot->children[i]->children.push_back((RobotElements*) new RobotElements(identity));
 	}*/
-
-	torsoRoot->Draw();
-
+	
 	return torsoRoot;
-
 }
+void dfs() {
+	
+}
+
 
 //transformations consists of 3 parts
 //object positioning in world
@@ -203,8 +229,7 @@ void Display()
 	//DrawCube(modelViewProjectionMatrix.topMatrix());
 	//modelViewProjectionMatrix.popMatrix();
 
-	robot->Draw();
-
+	robot->Draw(modelViewProjectionMatrix);
 
 	modelViewProjectionMatrix.popMatrix();
 
@@ -213,15 +238,25 @@ void Display()
 }
 
 void cameraRotation(double xpos, double ypos) {
-	int xDiff = xpos - prev_xpos;
-	glm::vec3 lookat = glm::normalize(center - eye);
-	glm::vec3 right = glm::cross(lookat, up);
+
+	//glm::vec3 lookat = glm::normalize(center - eye);
+	glm::vec3 right = glm::cross(center, up);
 	//calculate phi and theta
-	double theta = atan(eye.z / eye.y);
-	
-	
+
+	glm::vec3 a(eye.x - center.x, eye.y - center.y, eye.z - center.z);
+
+
+	glm::vec3 normalA = glm::normalize(a);
+
+	double theta = glm::dot(normalA, up) / (glm::length(normalA) * glm::length(up));
+	double phi = glm::dot(normalA, right) / (glm::length(normalA) * glm::length(right));
+	//rotate on specific axis. glm::rotate(angle (radians), axis(vec3)). gives rotatation matrix. Multiply with the matrix to rotate. [rotation
+
+	int xDiff = xpos - prev_xpos;
 	if (xDiff > 0) {
-		
+
+		/*eye.x = eye.x * cos(phi - 0.1) - eye.y * sin(phi - 0.1);
+		eye.z = -eye.x * sin(phi - 0.1) + eye.z * cos(phi - 0.1);*/
 	}
 	else if (xDiff < 0) {
 	
@@ -229,8 +264,14 @@ void cameraRotation(double xpos, double ypos) {
 
 	int yDiff = ypos - prev_ypos;
 	if (yDiff > 0) {
-		//rotate vector a
-		glm::vec3 a(0.0f, 0.0f, 0.0f);
+
+		//y-axis
+		eye.x = eye.x * cos(theta - 0.1) - eye.y * sin(theta - 0.1);
+		eye.z = -eye.x * sin(theta - 0.1) + eye.z * cos(theta - 0.1);
+
+		//z-axis
+		//eye.x = 
+
 	}
 	else if (yDiff < 0) {
 		//rotate vector a
@@ -238,18 +279,20 @@ void cameraRotation(double xpos, double ypos) {
 }
 
 void cameraZoom(double yoffset) {
+
+	//need to change this from center to look at vector
+	//a = eye - lookat
 	if (yoffset > 0) {
 		//zoom in
-		eye.x = eye.x-center.x * 0.9;
-		eye.y = eye.y -center.y * 0.9;
-		eye.z = eye.z - center.z * 0.9;
+		eye.x = (eye.x - center.x) * 0.9;
+		eye.y = (eye.y - center.y) * 0.9;
+		eye.z = (eye.z - center.z) * 0.9;
 	}
 	else if (yoffset < 0) {
 		//zoom out
-		eye.x = eye.x - center.x * 1.1;
-		eye.y = eye.y - center.y * 1.1;
-		eye.z = eye.z - center.z * 1.1;
-
+		eye.x = (eye.x - center.x) * 1.1;
+		eye.y = (eye.y - center.y) * 1.1;
+		eye.z = (eye.z - center.z) * 1.1;
 	}
 }
 
@@ -310,12 +353,7 @@ void CursorPositionCallback(GLFWwindow* lWindow, double xpos, double ypos)
 }
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-	//yoffset
-	//compute vector from eye to center and then scale it
-	//distance
 	cameraZoom(yoffset);
-	
-
 }
 
 
@@ -323,6 +361,27 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 void CharacterCallback(GLFWwindow* lWindow, unsigned int key)
 {
 	std::cout << "Key " << (char)key << " is pressed." << std::endl;
+
+	switch ((char)key) {
+	case '.':
+		break;
+	case ',':
+		break;
+	case 'x':
+		break;
+	case 'X':
+		break;
+	case 'y':
+		break;
+	case 'Y':
+		break;
+	case 'z':
+		break;
+	case 'Z':
+		break;
+	default:
+		break;
+	}
 }
 
 void CreateCube()
@@ -411,6 +470,7 @@ void Init()
 	program.Init();
 
 	robot = ConstructRobot();
+	selectedComponent = robot;
 	CreateCube();
 }
 
