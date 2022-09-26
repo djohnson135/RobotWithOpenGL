@@ -129,7 +129,7 @@ RobotElements* robot = nullptr;
 RobotElements* selectedComponent = nullptr;
 std::vector<RobotElements*> dfs_node_list;
 std::vector<RobotElements*> visited_node_list;
-
+int node_list_iter = 0;
 RobotElements* ConstructRobot()
 {
 
@@ -223,45 +223,45 @@ RobotElements* ConstructRobot()
 	
 	return torsoRoot;
 }
-void dfs_forwards() {
-	selectedComponent->isSelected = false;
-	visited_node_list.push_back(selectedComponent);
-	if (dfs_node_list.empty()) {
-		selectedComponent = robot;
-	}
-	else if (selectedComponent->children.empty()) {
-		selectedComponent = dfs_node_list.back();
+
+
+void dfs() {
+	//until root is hit build search order and add to node list
+	RobotElements* curnode;
+	while (!dfs_node_list.empty()) {
+		curnode = dfs_node_list.back();
 		dfs_node_list.pop_back();
-	}
-	else {
-		
-		selectedComponent = dfs_node_list.back();
-		dfs_node_list.pop_back();
-		for (auto iter : selectedComponent->children) {
+		visited_node_list.push_back(curnode);
+		//expand
+		for (auto iter : curnode->children) {
 			dfs_node_list.push_back(iter);
 		}
 	}
-	selectedComponent->isSelected = true;
+
 }
 
-void dfs_backwards() {
+void dfsForwards() {
+	if (visited_node_list.size() == node_list_iter) {
+		node_list_iter = 0;
+		
+	}
+
 	selectedComponent->isSelected = false;
-	if (visited_node_list.size() == 0) {
-		//at root
-		selectedComponent = robot;
-		selectedComponent->isSelected = true;
-	}
-	else {
-		selectedComponent = visited_node_list.front();
-		visited_node_list.pop_back();
-		selectedComponent->isSelected = true;
-	}
+	selectedComponent = visited_node_list[node_list_iter];
+	selectedComponent->isSelected = true;
+	node_list_iter++;
 }
 
-//transformations consists of 3 parts
-//object positioning in world
-//world to camera
-//projection matrix
+void dfsBackwards() {
+	if (node_list_iter == -1) {
+		node_list_iter = visited_node_list.size()-1;
+	}
+
+	selectedComponent->isSelected = false;
+	selectedComponent = visited_node_list[node_list_iter];
+	selectedComponent->isSelected = true;
+	node_list_iter--;
+}
 
 void Display()
 {	
@@ -411,22 +411,28 @@ void CharacterCallback(GLFWwindow* lWindow, unsigned int key)
 
 	switch ((char)key) {
 	case '.':
-		dfs_forwards();
+		dfsForwards();
 		break;
 	case ',':
-		dfs_backwards();
+		dfsBackwards();
 		break;
 	case 'x':
+		selectedComponent->incrementAngleX();
 		break;
 	case 'X':
+		selectedComponent->DecrementAngleX();
 		break;
 	case 'y':
+		selectedComponent->incrementAngleY();
 		break;
 	case 'Y':
+		selectedComponent->DecrementAngleY();
 		break;
 	case 'z':
+		selectedComponent->incrementAngleZ();
 		break;
 	case 'Z':
+		selectedComponent->DecrementAngleZ();
 		break;
 	default:
 		break;
@@ -521,6 +527,7 @@ void Init()
 	robot = ConstructRobot();
 	selectedComponent = robot;
 	dfs_node_list.push_back(robot);
+	dfs();
 	CreateCube();
 }
 
