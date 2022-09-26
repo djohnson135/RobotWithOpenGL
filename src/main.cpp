@@ -318,7 +318,7 @@ void cameraRotation(double xpos, double ypos) {
 	if (yDiff > 0) {
 		glm::vec3 Arotated = glm::rotate(a, glm::radians(-2.0f), right);
 		eye = center + Arotated;
-		up = glm::normalize(glm::cross(right, Arotated));
+		up = glm::normalize(glm::cross(right, Arotated)); //remove normalize
 	}
 	else if (yDiff < 0) {
 		glm::vec3 Arotated = glm::rotate(a, glm::radians(2.0f), right);
@@ -331,6 +331,8 @@ void cameraZoom(double yoffset) {
 
 	//need to change this from center to look at vector
 	//a = eye - lookat
+	
+
 	if (yoffset > 0) {
 		//zoom in
 		eye.x = (eye.x - center.x) * 0.9;
@@ -348,28 +350,61 @@ void cameraZoom(double yoffset) {
 void cameraTranslate(double xpos, double ypos) {
 	//change in x
 	//windowwidth
+	glm::vec3 a(eye.x - center.x, eye.y - center.y, eye.z - center.z);
+	glm::vec3 right = glm::normalize(glm::cross(a, up));
 	int xDiff = xpos - prev_xpos;
 	if (xDiff > 0) {
 		//translation factor = xdiff/windowWidth right direction
-		eye.x -= 0.1;
-		center.x -= 0.1;
+		//eye = eye + -right;
+		eye.x = eye.x - right.x * 0.2;
+		eye.y = eye.y - right.y * 0.2;
+		eye.z = eye.z - right.z * 0.2;
+		
+		//center = center -right;
+		center.x = center.x - right.x * 0.2;
+		center.y = center.y - right.y * 0.2;
+		center.z = center.z - right.z * 0.2;
+
 	}
 	else if (xDiff < 0) {
 		//translation factor = xdiff/windowWidth left direction
-		eye.x += 0.1;
-		center.x += 0.1;
+		//eye = eye + right;
+		eye.x = eye.x + right.x * 0.2;
+		eye.y = eye.y + right.y * 0.2;
+		eye.z = eye.z + right.z * 0.2;
+
+		//center = center + right;
+		center.x = center.x + right.x * 0.2;
+		center.y = center.y + right.y * 0.2;
+		center.z = center.z + right.z * 0.2;
 	}
 
 	int yDiff = ypos - prev_ypos;
 	if (yDiff > 0) {
 		//translation factor = ydiff/windowHeight up direction
-		eye.y += 0.1;
-		center.y += 0.1;
+		/*eye = eye + up;
+		center = center + up;*/
+		eye.x = eye.x + up.x * 0.2;
+		eye.y = eye.y + up.y * 0.2;
+		eye.z = eye.z + up.z * 0.2;
+
+		center.x = center.x + up.x * 0.2;
+		center.y = center.y + up.y * 0.2;
+		center.z = center.z + up.z * 0.2;
 	}
 	else if (yDiff < 0) {
 		//translation factor = ydiff/windowHeight down direction
-		eye.y -= 0.1;
-		center.y -= 0.1;
+
+		/*eye = eye + -up;
+		center = center + -up;*/
+
+		eye.x = eye.x - up.x * 0.2;
+		eye.y = eye.y - up.y * 0.2;
+		eye.z = eye.z - up.z * 0.2;
+
+		center.x = center.x - up.x * 0.2;
+		center.y = center.y - up.y * 0.2;
+		center.z = center.z - up.z * 0.2;
 	}
 
 }
