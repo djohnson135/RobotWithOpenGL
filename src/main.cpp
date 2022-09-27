@@ -144,62 +144,62 @@ RobotElements* ConstructRobot()
 
 	//head vectors
 
-	glm::vec3 headJoint(0.0f, +0.4f, 0.0f);
-	glm::vec3 headParentJoint(0.0f, 1.1f, 0.0f);
+	glm::vec3 headJoint(0.0f, 1.1f, 0.0f);
+	glm::vec3 headParentJoint(0.0f, 0.4f, 0.0f);
 	glm::vec3 headScalingFactors(0.5f, 0.4f, 0.5f);
 	glm::vec3 headJointAngle(0.0f, 0.0f, 0.0f); 
 
 
 	//rightarm
 
-	glm::vec3 rightArmJoint(0.35f, 0.0f, 0.0f);
-	glm::vec3 rightArmParentJoint(0.6f, 0.7f, 0.0f);
+	glm::vec3 rightArmJoint(0.6f, 0.7f, 0.0f);
+	glm::vec3 rightArmParentJoint(0.35f, 0.0f, 0.0f);
 	glm::vec3 rightArmScalingFactors(0.7f, 0.3f, 0.3f);
 	glm::vec3 rightArmJointAngle(0.0f, 0.0f, 0.0f);
 
 	//lowerRightArm
-	glm::vec3 lRightArmJoint(0.35f, 0.0f, 0.0f);
-	glm::vec3 lRightArmParentJoint(1.1f, 0.7f, 0.0f);
+	glm::vec3 lRightArmJoint(0.9f, 0.0f, 0.0f);
+	glm::vec3 lRightArmParentJoint(0.35f, 0.0f, 0.0f);
 	glm::vec3 lRightArmScalingFactors(0.7f, 0.2f, 0.2f);
 	glm::vec3 lRightArmJointAngle(0.0f, 0.0f, 0.0f);
 
 
 	//leftarm
-	glm::vec3 leftArmJoint(-0.35f, 0.0f, 0.0f);
-	glm::vec3 leftArmParentJoint(-0.6f, 0.7f, 0.0f);
+	glm::vec3 leftArmJoint(-0.6f, 0.7f, 0.0f);
+	glm::vec3 leftArmParentJoint(-0.35f, 0.0f, 0.0f);
 	glm::vec3 leftArmScalingFactors(0.7f, 0.3f, 0.3f);
 	glm::vec3 leftArmJointAngle(0.0f, 0.0f, 0.0f);
 
 	//lowerLeftArm
-	glm::vec3 lLeftArmJoint(-0.35f, 0.0f, 0.0f);
-	glm::vec3 lLeftArmParentJoint(-1.1f, 0.7f, 0.0f);
+	glm::vec3 lLeftArmJoint(-0.9f, 0.0f, 0.0f);
+	glm::vec3 lLeftArmParentJoint(-0.35f, 0.0f, 0.0f);
 	glm::vec3 lLeftArmScalingFactors(0.7f, 0.2f, 0.2f);
 	glm::vec3 lLeftArmJointAngle(0.0f, 0.0f, 0.0f);
 
 
 	//LeftLeg
-	glm::vec3 leftLegJoint(0.0f, -0.3f, 0.0f);
-	glm::vec3 leftLegParentJoint(-0.4f, -1.2f, 0.0f);
+	glm::vec3 leftLegJoint(-0.4f, -1.2f, 0.0f);
+	glm::vec3 leftLegParentJoint(0.0f, -0.3f, 0.0f);
 	glm::vec3 leftLegScalingFactors(0.3f, 0.8f, 0.3f);
 	glm::vec3 leftLegJointAngle(0.0f, 0.0f, 0.0f);
 
 	//lowerLeftLeg
-	glm::vec3 lLeftLegJoint(0.0f, -0.3f, 0.0f);
-	glm::vec3 lLeftLegParentJoint(-0.4f, -2.0f, 0.0f);
-	glm::vec3 lLeftLegScalingFactors(0.2f, 0.8f, 0.2f);
+	glm::vec3 lLeftLegJoint(0.0f, -1.3f, 0.0f);
+	glm::vec3 lLeftLegParentJoint(0.0f, -0.2f, 0.0f);
+	glm::vec3 lLeftLegScalingFactors(0.2f, 0.5f, 0.2f);
 	glm::vec3 lLeftLegJointAngle(0.0f, 0.0f, 0.0f);
 
 
 	//RightLeg
-	glm::vec3 rightLegJoint(0.0f, -0.3f, 0.0f);
-	glm::vec3 rightLegParentJoint(0.4f, -1.2f, 0.0f);
+	glm::vec3 rightLegJoint(0.4f, -1.2f, 0.0f);
+	glm::vec3 rightLegParentJoint(0.0f, -0.3f, 0.0f);
 	glm::vec3 rightLegScalingFactors(0.3f, 0.8f, 0.3f);
 	glm::vec3 rightLegJointAngle(0.0f, 0.0f, 0.0f);
 
 	//lowerRightLeg
-	glm::vec3 lrightLegJoint(0.0f, -0.3f, 0.0f);
-	glm::vec3 lrightLegParentJoint(0.4f, -2.0f, 0.0f);
-	glm::vec3 lrightLegScalingFactors(0.2f, 0.8f, 0.2f);
+	glm::vec3 lrightLegJoint(0.0f, -1.3f, 0.0f);
+	glm::vec3 lrightLegParentJoint(0.0f, -0.2f, 0.0f);
+	glm::vec3 lrightLegScalingFactors(0.2f, 0.5f, 0.2f);
 	glm::vec3 lrightLegJointAngle(0.0f, 0.0f, 0.0f);
 
 
@@ -335,15 +335,15 @@ void cameraZoom(double yoffset) {
 
 	if (yoffset > 0) {
 		//zoom in
-		eye.x = (eye.x - center.x) * 0.9;
-		eye.y = (eye.y - center.y) * 0.9;
-		eye.z = (eye.z - center.z) * 0.9;
+		eye.x = (eye.x - center.x) * 0.95;
+		eye.y = (eye.y - center.y) * 0.95;
+		eye.z = (eye.z - center.z) * 0.95;
 	}
 	else if (yoffset < 0) {
 		//zoom out
-		eye.x = (eye.x - center.x) * 1.1;
-		eye.y = (eye.y - center.y) * 1.1;
-		eye.z = (eye.z - center.z) * 1.1;
+		eye.x = (eye.x - center.x) * 1.05;
+		eye.y = (eye.y - center.y) * 1.05;
+		eye.z = (eye.z - center.z) * 1.05;
 	}
 }
 
@@ -356,27 +356,27 @@ void cameraTranslate(double xpos, double ypos) {
 	if (xDiff > 0) {
 		//translation factor = xdiff/windowWidth right direction
 		//eye = eye + -right;
-		eye.x = eye.x - right.x * 0.2;
-		eye.y = eye.y - right.y * 0.2;
-		eye.z = eye.z - right.z * 0.2;
+		eye.x = eye.x - right.x * 0.1;
+		eye.y = eye.y - right.y * 0.1;
+		eye.z = eye.z - right.z * 0.1;
 		
 		//center = center -right;
-		center.x = center.x - right.x * 0.2;
-		center.y = center.y - right.y * 0.2;
-		center.z = center.z - right.z * 0.2;
+		center.x = center.x - right.x * 0.1;
+		center.y = center.y - right.y * 0.1;
+		center.z = center.z - right.z * 0.1;
 
 	}
 	else if (xDiff < 0) {
 		//translation factor = xdiff/windowWidth left direction
 		//eye = eye + right;
-		eye.x = eye.x + right.x * 0.2;
-		eye.y = eye.y + right.y * 0.2;
-		eye.z = eye.z + right.z * 0.2;
+		eye.x = eye.x + right.x * 0.1;
+		eye.y = eye.y + right.y * 0.1;
+		eye.z = eye.z + right.z * 0.1;
 
 		//center = center + right;
-		center.x = center.x + right.x * 0.2;
-		center.y = center.y + right.y * 0.2;
-		center.z = center.z + right.z * 0.2;
+		center.x = center.x + right.x * 0.1;
+		center.y = center.y + right.y * 0.1;
+		center.z = center.z + right.z * 0.1;
 	}
 
 	int yDiff = ypos - prev_ypos;
@@ -384,13 +384,13 @@ void cameraTranslate(double xpos, double ypos) {
 		//translation factor = ydiff/windowHeight up direction
 		/*eye = eye + up;
 		center = center + up;*/
-		eye.x = eye.x + up.x * 0.2;
-		eye.y = eye.y + up.y * 0.2;
-		eye.z = eye.z + up.z * 0.2;
+		eye.x = eye.x - up.x * 0.1;
+		eye.y = eye.y - up.y * 0.1;
+		eye.z = eye.z - up.z * 0.1;
 
-		center.x = center.x + up.x * 0.2;
-		center.y = center.y + up.y * 0.2;
-		center.z = center.z + up.z * 0.2;
+		center.x = center.x - up.x * 0.1;
+		center.y = center.y - up.y * 0.1;
+		center.z = center.z - up.z * 0.1;
 	}
 	else if (yDiff < 0) {
 		//translation factor = ydiff/windowHeight down direction
@@ -398,13 +398,13 @@ void cameraTranslate(double xpos, double ypos) {
 		/*eye = eye + -up;
 		center = center + -up;*/
 
-		eye.x = eye.x - up.x * 0.2;
-		eye.y = eye.y - up.y * 0.2;
-		eye.z = eye.z - up.z * 0.2;
+		eye.x = eye.x + up.x * 0.1;
+		eye.y = eye.y + up.y * 0.1;
+		eye.z = eye.z + up.z * 0.1;
 
-		center.x = center.x - up.x * 0.2;
-		center.y = center.y - up.y * 0.2;
-		center.z = center.z - up.z * 0.2;
+		center.x = center.x + up.x * 0.1;
+		center.y = center.y + up.y * 0.1;
+		center.z = center.z + up.z * 0.1;
 	}
 
 }
