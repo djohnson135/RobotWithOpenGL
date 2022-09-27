@@ -28,7 +28,7 @@ MatrixStack modelViewProjectionMatrix;
 double prev_xpos = -10000;
 double prev_ypos = -10000;
 
-
+bool start = true;
 // Draw cube on screen
 void DrawCube(glm::mat4& modelViewProjectionMatrix)
 {
@@ -241,26 +241,42 @@ void dfs() {
 }
 
 void dfsForwards() {
-	if (visited_node_list.size() == node_list_iter) {
-		node_list_iter = 0;
-		
+	if (visited_node_list.empty()) {
+		return;
 	}
-
+	if (start) {
+		start = false;
+	}
+	else if (node_list_iter == 0 && visited_node_list.size() > 1) {
+		node_list_iter = 1;
+	}
 	selectedComponent->isSelected = false;
 	selectedComponent = visited_node_list[node_list_iter];
 	selectedComponent->isSelected = true;
 	node_list_iter++;
+	if (node_list_iter > visited_node_list.size() - 1) {
+		node_list_iter = visited_node_list.size() - 1;
+	}
 }
 
 void dfsBackwards() {
-	if (node_list_iter == -1) {
-		node_list_iter = visited_node_list.size()-1;
+	if (visited_node_list.empty()) {
+		return;
 	}
-
+	if (start){
+		start = false;
+	}
+	else if (node_list_iter == visited_node_list.size() - 1 && visited_node_list.size() > 1) {
+		node_list_iter = visited_node_list.size() - 2;
+	}
 	selectedComponent->isSelected = false;
 	selectedComponent = visited_node_list[node_list_iter];
 	selectedComponent->isSelected = true;
 	node_list_iter--;
+	if (node_list_iter < 0) {
+		node_list_iter = 0;
+	}
+	
 }
 
 void Display()
@@ -336,19 +352,20 @@ void cameraZoom(double yoffset) {
 
 	if (yoffset > 0) {
 		//zoom in
-		/*glm::vec3 test = a + center;
-		eye = glm::rotate(a) + center;*/
-		/*glm::vec3 rotationMatrix(1.0f);
-		eye = glm::rotate(a, glm::radians(2.0f), rotationMatrix) + center;*/
-		eye.x = (eye.x - center.x) * 0.95;
-		eye.y = (eye.y - center.y) * 0.95;
-		eye.z = (eye.z - center.z) * 0.95;
+
+		a.x  = a.x * 0.95;
+		a.y = a.y * 0.95;
+		a.z = a.z * 0.95;
+
+		eye = a + center;
+
 	}
 	else if (yoffset < 0) {
 		//zoom out
-		eye.x = (eye.x - center.x) * 1.05;
-		eye.y = (eye.y - center.y) * 1.05;
-		eye.z = (eye.z - center.z) * 1.05;
+		a.x = a.x * 1.05;
+		a.y = a.y * 1.05;
+		a.z = a.z * 1.05;
+		eye = a + center;
 	}
 }
 
