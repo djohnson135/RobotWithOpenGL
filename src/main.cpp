@@ -71,23 +71,23 @@ public:
 	}
 
 	void incrementAngleX() {
-		this->jointAngle.x++;
+		if (isSelected) this->jointAngle.x++;
 	}
 	void incrementAngleY() {
-		this->jointAngle.y++;
+		if (isSelected)this->jointAngle.y++;
 	}
 	void incrementAngleZ() {
-		this->jointAngle.z++;
+		if (isSelected)this->jointAngle.z++;
 	}
 
 	void DecrementAngleX() {
-		this->jointAngle.x--;
+		if (isSelected)this->jointAngle.x--;
 	}
 	void DecrementAngleY() {
-		this->jointAngle.y--;
+		if (isSelected)this->jointAngle.y--;
 	}
 	void DecrementAngleZ() {
-		this->jointAngle.z--;
+		if(isSelected)this->jointAngle.z--;
 	}
 
 	//MatrixStack & _matrixStack
@@ -96,7 +96,7 @@ public:
 
 		_modelViewProjectionMatrix->pushMatrix();
 		//global first then draw children
-		_modelViewProjectionMatrix->translate(this->jointTranslationWrtParentJoint);
+		_modelViewProjectionMatrix->translate(this->translationWrtJoint); //translates to joint should be a local transformation but it works backwards because structure
 		//how do we calculate this. The joint angle with respect to what vector
 		_modelViewProjectionMatrix->rotateX(glm::radians(this->jointAngle.x));
 		_modelViewProjectionMatrix->rotateY(glm::radians(this->jointAngle.y));
@@ -110,7 +110,7 @@ public:
 		}
 		
 		//move componenent to center of coordinate how do we calculat his
-		_modelViewProjectionMatrix->translate(this->translationWrtJoint);
+		_modelViewProjectionMatrix->translate(this->jointTranslationWrtParentJoint); //translates to parent joint
 		//scale
 		_modelViewProjectionMatrix->scale(this->scalingFactors);
 
@@ -135,8 +135,8 @@ RobotElements* ConstructRobot()
 
 	//torso vectors
 	//translate (right/left, up/down, forwards/backwards
-	glm::vec3 torsoJoint(0.0f, 0.0f, 0.0f);
 	glm::vec3 torsoParentJoint(0.0f, 0.0f, 0.0f);
+	glm::vec3 torsoJoint(0.0f, 0.0f, 0.0f);
 	glm::vec3 torsoScalingFactors(0.7f, 1.1f, 0.7f);
 	glm::vec3 torsoJointAngle(0.0f, 0.0f, 0.0f);
 
@@ -144,61 +144,61 @@ RobotElements* ConstructRobot()
 
 	//head vectors
 
-	glm::vec3 headJoint(0.0f, 1.1f, 0.0f);
-	glm::vec3 headParentJoint(0.0f, 0.4f, 0.0f);
+	glm::vec3 headParentJoint(0.0f, 1.1f, 0.0f);
+	glm::vec3 headJoint(0.0f, 0.4f, 0.0f);
 	glm::vec3 headScalingFactors(0.5f, 0.4f, 0.5f);
 	glm::vec3 headJointAngle(0.0f, 0.0f, 0.0f); 
 
 
 	//rightarm
 
-	glm::vec3 rightArmJoint(0.6f, 0.7f, 0.0f);
-	glm::vec3 rightArmParentJoint(0.35f, 0.0f, 0.0f);
+	glm::vec3 rightArmParentJoint(0.6f, 0.7f, 0.0f);
+	glm::vec3 rightArmJoint(0.35f, 0.0f, 0.0f);
 	glm::vec3 rightArmScalingFactors(0.7f, 0.3f, 0.3f);
 	glm::vec3 rightArmJointAngle(0.0f, 0.0f, 0.0f);
 
 	//lowerRightArm
-	glm::vec3 lRightArmJoint(0.9f, 0.0f, 0.0f);
-	glm::vec3 lRightArmParentJoint(0.35f, 0.0f, 0.0f);
+	glm::vec3 lRightArmParentJoint(0.9f, 0.0f, 0.0f);
+	glm::vec3 lRightArmJoint(0.35f, 0.0f, 0.0f);
 	glm::vec3 lRightArmScalingFactors(0.7f, 0.2f, 0.2f);
 	glm::vec3 lRightArmJointAngle(0.0f, 0.0f, 0.0f);
 
 
 	//leftarm
-	glm::vec3 leftArmJoint(-0.6f, 0.7f, 0.0f);
-	glm::vec3 leftArmParentJoint(-0.35f, 0.0f, 0.0f);
+	glm::vec3 leftArmParentJoint(-0.6f, 0.7f, 0.0f);
+	glm::vec3 leftArmJoint(-0.35f, 0.0f, 0.0f);
 	glm::vec3 leftArmScalingFactors(0.7f, 0.3f, 0.3f);
 	glm::vec3 leftArmJointAngle(0.0f, 0.0f, 0.0f);
 
 	//lowerLeftArm
-	glm::vec3 lLeftArmJoint(-0.9f, 0.0f, 0.0f);
-	glm::vec3 lLeftArmParentJoint(-0.35f, 0.0f, 0.0f);
+	glm::vec3 lLeftArmParentJoint(-0.9f, 0.0f, 0.0f);
+	glm::vec3 lLeftArmJoint(-0.35f, 0.0f, 0.0f);
 	glm::vec3 lLeftArmScalingFactors(0.7f, 0.2f, 0.2f);
 	glm::vec3 lLeftArmJointAngle(0.0f, 0.0f, 0.0f);
 
 
 	//LeftLeg
-	glm::vec3 leftLegJoint(-0.4f, -1.2f, 0.0f);
-	glm::vec3 leftLegParentJoint(0.0f, -0.3f, 0.0f);
+	glm::vec3 leftLegParentJoint(-0.4f, -1.2f, 0.0f);
+	glm::vec3 leftLegJoint(0.0f, -0.3f, 0.0f);
 	glm::vec3 leftLegScalingFactors(0.3f, 0.8f, 0.3f);
 	glm::vec3 leftLegJointAngle(0.0f, 0.0f, 0.0f);
 
 	//lowerLeftLeg
-	glm::vec3 lLeftLegJoint(0.0f, -1.3f, 0.0f);
-	glm::vec3 lLeftLegParentJoint(0.0f, -0.2f, 0.0f);
+	glm::vec3 lLeftLegParentJoint(0.0f, -1.3f, 0.0f);
+	glm::vec3 lLeftLegJoint(0.0f, -0.2f, 0.0f);
 	glm::vec3 lLeftLegScalingFactors(0.2f, 0.5f, 0.2f);
 	glm::vec3 lLeftLegJointAngle(0.0f, 0.0f, 0.0f);
 
 
 	//RightLeg
-	glm::vec3 rightLegJoint(0.4f, -1.2f, 0.0f);
-	glm::vec3 rightLegParentJoint(0.0f, -0.3f, 0.0f);
+	glm::vec3 rightLegParentJoint(0.4f, -1.2f, 0.0f);
+	glm::vec3 rightLegJoint(0.0f, -0.3f, 0.0f);
 	glm::vec3 rightLegScalingFactors(0.3f, 0.8f, 0.3f);
 	glm::vec3 rightLegJointAngle(0.0f, 0.0f, 0.0f);
 
 	//lowerRightLeg
-	glm::vec3 lrightLegJoint(0.0f, -1.3f, 0.0f);
-	glm::vec3 lrightLegParentJoint(0.0f, -0.2f, 0.0f);
+	glm::vec3 lrightLegParentJoint(0.0f, -1.3f, 0.0f);
+	glm::vec3 lrightLegJoint(0.0f, -0.2f, 0.0f);
 	glm::vec3 lrightLegScalingFactors(0.2f, 0.5f, 0.2f);
 	glm::vec3 lrightLegJointAngle(0.0f, 0.0f, 0.0f);
 
@@ -331,10 +331,15 @@ void cameraZoom(double yoffset) {
 
 	//need to change this from center to look at vector
 	//a = eye - lookat
+	glm::vec3 a = eye - center;
 	
 
 	if (yoffset > 0) {
 		//zoom in
+		/*glm::vec3 test = a + center;
+		eye = glm::rotate(a) + center;*/
+		/*glm::vec3 rotationMatrix(1.0f);
+		eye = glm::rotate(a, glm::radians(2.0f), rotationMatrix) + center;*/
 		eye.x = (eye.x - center.x) * 0.95;
 		eye.y = (eye.y - center.y) * 0.95;
 		eye.z = (eye.z - center.z) * 0.95;
